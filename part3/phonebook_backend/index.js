@@ -5,9 +5,12 @@ const app = express();
 
 app.use(express.json())
 
+//3.8 
+morgan.token('body',(req)=> JSON.stringify(req.body))
 //3.7
-
 app.use(morgan('tiny'))
+app.use(morgan(':body'))
+
 
 //3.1 step 1
 let persons = [
@@ -98,10 +101,11 @@ app.post('/api/persons',(req, res) => {
 
     persons = persons.concat(person)
     res.json(person)
-    
+
 
 })
 
+    
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
   }
