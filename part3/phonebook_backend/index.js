@@ -1,10 +1,13 @@
 
 const express = require('express');
-
+const morgan = require('morgan')
 const app = express();
-const PORT = 3001;
+
 app.use(express.json())
 
+//3.7
+
+app.use(morgan('tiny'))
 
 //3.1 step 1
 let persons = [
@@ -32,7 +35,9 @@ let persons = [
 
 
 //3.1
-
+app.get('/', (req, res) => {
+    res.send('Phonebook backend')
+})
 app.get('/api/persons', (req, res) => {
     res.json(persons)
 })
@@ -93,10 +98,17 @@ app.post('/api/persons',(req, res) => {
 
     persons = persons.concat(person)
     res.json(person)
+    
+
 })
 
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+  }
+
+app.use(unknownEndpoint)
 
 
 
-
+const PORT = 3001;
 app.listen(PORT, ()=>{console.log(`Server running on port ${PORT}`)})
