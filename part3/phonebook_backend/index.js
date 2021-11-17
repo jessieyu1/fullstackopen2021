@@ -6,7 +6,7 @@ const cors = require('cors')
 
 app.use(cors())
 app.use(express.json())
-
+app.use(express.static('build'))
 //3.8 
 morgan.token('body',(req)=> JSON.stringify(req.body))
 //3.7
