@@ -17,32 +17,13 @@ morgan.token('body',(req)=> JSON.stringify(req.body))
 app.use(morgan('tiny'))
 app.use(morgan(':body'))
 
-
-// //3.1 step 1
-// let persons = [
-//     { 
-//         "id": 1,
-//         "name": "Arto Hellas", 
-//         "number": "040-123456"
-//     },
-//     { 
-//         "id": 2,
-//         "name": "Ada Lovelace", 
-//         "number": "39-44-5323523"
-//     },
-//     { 
-//         "id": 3,
-//         "name": "Dan Abramov", 
-//         "number": "12-43-234345"
-//     },
-//     { 
-//         "id": 4,
-//         "name": "Mary Poppendieck", 
-//         "number": "39-23-6423122"
-//     }
-// ]
-
-
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+    next(error)
+}
 //3.1
 app.get('/', (req, res) => {
     res.send('Phonebook backend')
@@ -61,31 +42,38 @@ app.get('/api/persons', (req, res) => {
 
 // })
 //3.3
-app.get('/api/persons/:id', (req,res) => {
-    Person.findById(req.params.id).then(person => {
-        res.json(person)
+app.get('/api/persons/:id', (req,res,next) => {
+    Person.findById(req.params.id)
+        .then(person => {
+            if (person) {
+                res.json(person)
+            }else {
+                res.status(404).end()
+            }
     })
+    .catch(error => {next(error)})
 })
-//3.14 
-app.delete('/api/persons/:id', (req, res,next) => {
-    Person.findByIdAndRemove(request.params.id)
+//3.15 
+app.delete('/api/persons/:id', (req, res, next) => {
+    Person.findByIdAndRemove(req.params.id)
     .then(result => {
-        response.status(204).end()
+        res.status(204).end()
     })
     .catch(error => next(error))
 })
-//3.4
-//     const id = Number(req.params.id)
-//     persons = persons.filter(person => person.id !== id)
-//     res.status(204).end()
-// })
-//3.5 & 3.6  
-// const generateId = () => {
-//     const maxId = persons.length > 0
-//         ? Math.max(...persons.map(p => p.id))
-//         : 0
-//     return maxId + 1 
-// }
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    const person = {
+        name: body.name,
+        number: body.number,
+    }
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+        .then(updatedPerson => {
+            response.json(updatedPerson)        
+    })
+        .catch(error => next(error))
+})
 
 app.post('/api/persons',(req, res) => {
     const body = req.body
@@ -114,6 +102,8 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 
+
+app.use(errorHandler)
 
 // 3.10
 const PORT = process.env.PORT
