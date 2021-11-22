@@ -16,17 +16,12 @@ morgan.token("body", (req) => JSON.stringify(req.body));
 app.use(morgan("tiny"));
 app.use(morgan(":body"));
 
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message);
-  if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformatted id" });
-  }
-  next(error);
-};
+
 //3.1
 app.get("/", (req, res) => {
   res.send("Phonebook backend");
 });
+
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((persons) => {
@@ -97,10 +92,20 @@ app.post("/api/persons", (req, res) => {
   });
 });
 
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 app.use(unknownEndpoint);
+
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+        return res.status(400).send({ error: 'malformatted id' })
+    }
+    next(error)
+}
+
 
 app.use(errorHandler);
 
