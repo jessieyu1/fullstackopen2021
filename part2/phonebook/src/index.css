@@ -1,6 +1,13 @@
 
-
-.newMessage{
+.body {
+    align-items: center;
+    font-family: sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #444;
+    background: #fff;
+}
+.newMessage {
     color: green;
     background: lightgrey;
     font-size: 20px;
@@ -11,7 +18,7 @@
     border-color: green;
 }
 
-.error{
+.error {
     color: red;
     background: lightgrey;
     font-size: 20px;

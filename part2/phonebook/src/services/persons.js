@@ -18,12 +18,7 @@ const remove = (id) => {
 }
 const update = (id, newPerson) => {
     const request = axios.put(`${baseUrl}/${id}`, newPerson)
-    const nonExisting = {
-        id: 10000,
-        name: 'The information has been removed.',
-        number: '000'
-    }
-    return request.then(response => response.data.concat(nonExisting))
+    return request.then(response => response.data)
 }
 const exportObject = {
     getAll: getAll,
