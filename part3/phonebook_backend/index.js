@@ -28,14 +28,16 @@ app.get("/api/persons", (req, res) => {
     res.json(persons);
   });
 });
-//res.json(persons)
-//3.2
-// app.get('/info', (req,res) => {
-//     const date = new Date()
-//     res.send(`<p>phonebook has info for ${Maxid} people </p><p>${date}</p>`)
 
-// })
-//3.3
+//3.18
+app.get("/api/persons/info", (req,res) => {
+  Person.count({}).then((count) => {
+    console.log(count)
+    res.send(`<p>Phonebook has info for ${count} people</p><p>${new Date()}</p>`)
+  })
+})
+
+
 app.get("/api/persons/:id", (req, res, next) => {
   Person.findById(req.params.id)
     .then((person) => {
