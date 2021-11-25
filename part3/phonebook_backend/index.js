@@ -17,12 +17,6 @@ app.use(morgan("tiny"));
 app.use(morgan(":body"));
 
 
-//3.1
-app.get("/", (req, res) => {
-  res.send("Phonebook backend");
-});
-
-
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((persons) => {
     res.json(persons);
@@ -75,16 +69,7 @@ app.put("/api/persons/:id", (request, response, next) => {
 
 app.post("/api/persons", (req, res,next) => {
   const body = req.body;
-  // if (body.name === undefined) {
-  //   return res.status(400).json({
-  //     error: "name missing",
-  //   });
-  // }
-  // if (body.number === undefined) {
-  //   return res.status(400).json({
-  //     error: "number missing",
-  //   });
-  // }
+
   const person = new Person({
     name: body.name,
     number: body.number,
@@ -97,8 +82,10 @@ app.post("/api/persons", (req, res,next) => {
   .then(savedAndFormattedPerson => {
     res.json(savedAndFormattedPerson)
     })
-  .catch((error) => next(error))
+  .catch(error => next(error))
 });
+
+
 
 
 
@@ -111,6 +98,8 @@ const errorHandler = (error, req, res, next) => {
     console.error(error.message)
     if (error.name === 'CastError' && error.kind === 'ObjectId') {
         return res.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+      return res.status(400).json({ error: error.message })
     }
     next(error)
 }
