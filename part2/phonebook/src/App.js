@@ -28,15 +28,23 @@ const App = () => {
         name: newName,
         number: newNumber,
       };
-      personService.create(newPerson).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
+      personService
+      .create(newPerson)
+      .then((createdPerson) => {
+        setPersons(persons.concat(createdPerson));
         setNewName("");
         setNewNumber("");
         setNewMesssage(`Added ${newName}`);
         setTimeout(() => {
           setNewMesssage(null);
         }, 3000);
-      });
+      })
+      .catch((error) => {
+        setErrorMesssage(`${error.response.data.error}`);
+        setTimeout(() => {
+          setErrorMesssage(null);
+        }, 3000);
+      })
     } else {
       if (persons.every((person) => person.number !== newNumber)) {
         if (
