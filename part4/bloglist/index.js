@@ -3,6 +3,16 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
+require('dotenv').config()
+
+
+
+const mongoUrl = process.env.MONGODB_URI
+console.log('connecting to', mongoUrl)
+mongoose.connect(mongoUrl)
+
+app.use(cors())
+app.use(express.json())
 
 const blogSchema = new mongoose.Schema({
   title: String,
@@ -13,12 +23,6 @@ const blogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model('Blog', blogSchema)
 
-const mongoUrl = process.env.MONGODB_URI
-console.log('connecting to', url)
-mongoose.connect(mongoUrl)
-
-app.use(cors())
-app.use(express.json())
 
 app.get('/api/blogs', (request, response) => {
   Blog
