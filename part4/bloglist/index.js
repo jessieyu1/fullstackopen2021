@@ -6,3 +6,4 @@ const config = require('./utils/config')
 
 
 logger.info(`Server running on port ${config.PORT}`)
+
