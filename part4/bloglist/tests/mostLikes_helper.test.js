@@ -1,6 +1,6 @@
-const mostBlogHelper = require("../utils/mostBlog_helper");
+const mostLikesHelper = require("../utils/mostLikes_helper");
 
-describe("The Most blog", () => {
+describe("The most likes author", () => {
   const blogs = [
     {
       _id: "5a422a851b54a676234d17f7",
@@ -47,18 +47,16 @@ describe("The Most blog", () => {
       title: "Type wars",
       author: "Robert C. Martin",
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-      likes: 12,
+      likes: 2,
       __v: 0,
     },
   ];
 
-  test("most blog", () => {
-    const result = mostBlogHelper.mostBlog(blogs);
-    expect(result).toEqual( 
-        {
-            author: "Robert C. Martin",
-            blogs: 3
-          }
-    );
+  test("most likes", () => {
+    const result = mostLikesHelper.mostLikes(blogs);
+    expect(result).toEqual({
+        author: "Edsger W. Dijkstra",
+        likes: 17
+    });
   });
 });
